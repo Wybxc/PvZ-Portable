@@ -28,9 +28,9 @@ list(REMOVE_ITEM SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Sexy.TodLib/TodDrawTriangleInc.cpp
 )
 
-set(NO_GLEW OFF)
-set(LOW_MEMORY OFF)
-set(DOWNSCALE_COUNT 1)
+set(NO_GLEW OFF CACHE BOOL "Disable GLEW")
+set(LOW_MEMORY OFF CACHE BOOL "Enable low memory mode")
+set(DOWNSCALE_COUNT 1 CACHE STRING "Image downscale count")
 if(NINTENDO_SWITCH)
 	set(NO_GLEW ON)
 	set(VORBIS_LIBS vorbisfile vorbis)
@@ -69,24 +69,27 @@ else()
 	)
 endif()
 
-option(CONSOLE "Show console on Windows" ON)
+option(ENABLE_DEBUG "Define _DEBUG macro" ON)
+option(CONSOLE "Show console on Windows" ${ENABLE_DEBUG})
+option(DO_FIX_BUGS "Define DO_FIX_BUGS macro" ON)
 
 find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(OpenGL REQUIRED)
 if (NOT NO_GLEW)
 	find_package(GLEW REQUIRED)
 endif()
 
-set(SDL_MIXER_X_STATIC ON CACHE BOOL "Build static library of SDL Mixer X" FORCE)
-set(SDL_MIXER_X_SHARED OFF CACHE BOOL "Build shared library of SDL Mixer X" FORCE)
-set(USE_MIDI OFF CACHE BOOL "SDL Mixer X midi" FORCE)
-set(USE_MODPLUG OFF CACHE BOOL "SDL Mixer X modplug" FORCE)
-set(USE_XMP OFF CACHE BOOL "SDL Mixer X xmp" FORCE)
-set(USE_OPUS OFF CACHE BOOL "SDL Mixer X opus" FORCE)
-set(USE_DRFLAC OFF CACHE BOOL "SDL Mixer X flac" FORCE)
-set(USE_PXTONE OFF CACHE BOOL "SDL Mixer X pxtone" FORCE)
+set(SDL_MIXER_X_STATIC ON CACHE BOOL "Build static library of SDL Mixer X")
+set(SDL_MIXER_X_SHARED OFF CACHE BOOL "Build shared library of SDL Mixer X")
+set(USE_MIDI OFF CACHE BOOL "SDL Mixer X midi")
+set(USE_MODPLUG OFF CACHE BOOL "SDL Mixer X modplug")
+set(USE_XMP OFF CACHE BOOL "SDL Mixer X xmp")
+set(USE_OPUS OFF CACHE BOOL "SDL Mixer X opus")
+set(USE_DRFLAC OFF CACHE BOOL "SDL Mixer X flac")
+set(USE_PXTONE OFF CACHE BOOL "SDL Mixer X pxtone")
 add_subdirectory(SexyAppFramework/sound/SDL-Mixer-X)
 
 add_executable(re-plants-vs-zombies ${SOURCES})
@@ -96,23 +99,45 @@ target_include_directories(re-plants-vs-zombies PRIVATE
 	${SDL2_INCLUDE_DIRS}
 	${PLAT_INCLUDES}
 )
-target_compile_definitions(re-plants-vs-zombies PRIVATE _DEBUG)
-target_compile_definitions(re-plants-vs-zombies PRIVATE DO_FIX_BUGS)
+target_compile_definitions(re-plants-vs-zombies PRIVATE
+	$<$<BOOL:${ENABLE_DEBUG}>:_DEBUG>
+	$<$<BOOL:${DO_FIX_BUGS}>:DO_FIX_BUGS>
+)
 
 if (LOW_MEMORY)
 	target_compile_definitions(re-plants-vs-zombies PRIVATE LOW_MEMORY)
 endif()
 target_compile_definitions(re-plants-vs-zombies PRIVATE IMG_DOWNSCALE=${DOWNSCALE_COUNT})
 
-target_link_libraries(re-plants-vs-zombies jpeg png z SDL2_mixer_ext_Static openmpt mpg123 ${VORBIS_LIBS} ogg ${SDL2_LIBRARIES} ${GLEW_LIBRARIES})
+target_link_libraries(re-plants-vs-zombies 
+	SDL2_mixer_ext_Static 
+	openmpt 
+	mpg123 
+	${VORBIS_LIBS} 
+	ogg 
+	${PNG_LIBRARIES} 
+	${JPEG_LIBRARIES} 
+	${ZLIB_LIBRARIES} 
+	${SDL2_LIBRARIES} 
+	${GLEW_LIBRARIES}
+)
 
 if (WIN32)
-	target_link_options(re-plants-vs-zombies PRIVATE -static -static-libgcc -static-libstdc++)
-	target_link_libraries(re-plants-vs-zombies opengl32 ws2_32 ddraw dinput8 dxguid dxerr8 user32 gdi32 winmm imm32 shlwapi)
+	if(MSVC)
+		target_compile_options(re-plants-vs-zombies PRIVATE /utf-8)
+	else()
+		target_link_options(re-plants-vs-zombies PRIVATE -static -static-libgcc -static-libstdc++)
+	endif()
+	
+	target_link_libraries(re-plants-vs-zombies OpenGL::GL ws2_32 user32 gdi32 winmm imm32 shlwapi)
 	target_compile_definitions(re-plants-vs-zombies PRIVATE WINDOWS)
 
 	if(NOT CONSOLE)
-		target_link_options(re-plants-vs-zombies PRIVATE -mwindows)
+		if(MSVC)
+			set_target_properties(re-plants-vs-zombies PROPERTIES WIN32_EXECUTABLE TRUE)
+		else()
+			target_link_options(re-plants-vs-zombies PRIVATE -mwindows)
+		endif()
 	endif()
 elseif (NINTENDO_SWITCH)
 	target_link_libraries(re-plants-vs-zombies glad EGL glapi drm_nouveau)
