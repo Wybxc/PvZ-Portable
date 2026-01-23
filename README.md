@@ -11,16 +11,31 @@ Fork of Patoke's PVZ GOTY decompilation with the following objectives:
 
 | Platform        | Data path                    | Status                                                                                 |
 |-----------------|------------------------------|----------------------------------------------------------------------------------------|
-| Windows (SDL2)  | Same as executable           | Works                                                                                  |
-| Linux (SDL2)    | Same as executable           | Works                                                                                  |
+| Windows (SDL2)  | Executable dir (resources); per-user app-data for writable files | Works                                                                                  |
+| Linux (SDL2)    | Executable dir (resources); per-user app-data for writable files | Works                                                                                  |
 | Haiku (SDL2)    | Same as executable           | Partially works: no music                                                              |
 | Nintendo Switch | sdmc:/switch/PlantsvsZombies | Works on real hardware and Citron. Kenji-NX crashes on boot.                           |
 | Nintendo 3DS    | sdmc:/3ds/PlantsvsZombies    | In development, might not have enough memory for Old 3DS, might barely work on New 3DS |
 | Nintendo Wii U  |                              | No work started yet, but planned                                                       |
 
-To play the game, you need the game data from PvZ GOTY. Copy "main.pak" and the "properties" folder to the path where the re-plants-vs-zombies executable is (or one of the above data paths for console ports).
+To play the game, you need the game data from PvZ GOTY. Place `main.pak` and the `properties/` folder next to the re-plants-vs-zombies executable (the game will search for resources relative to the executable's directory). You can also use extracted data instead of `main.pak` if you prefer.
 
-Alternatively, you could use a PvZ .pak extractor tool and use extracted data instead of main.pak, but that's up to you
+Note about writable data and caches:
+
+- The game will read resources (like `main.pak` and `properties/`) from the executable directory by default, so you can launch the binary from any working directory and it will still find them.
+- Per-user writable files (settings, savegames, compiled caches, screenshots) are stored in the **OS-recommended application data path**. With the current build these are under `io.github.wszqkzqk/PlantsVsZombies` and include subfolders such as:
+  - `userdata/` — player save files
+  - `compiled/` — compiled binary caches (reanimation / compiled definitions)
+  - `registry.regemu` — settings/registry emulation
+  - `popcinfo.dat` — basic runtime stats
+  - `_screenshots/` — screenshots created by the game
+
+Examples:
+
+- Linux: `~/.local/share/io.github.wszqkzqk/PlantsVsZombies/`
+- Windows: `%APPDATA%\io.github.wszqkzqk\PlantsVsZombies\`
+
+If you prefer to keep everything in the same folder as the executable, you can still configure a custom data directory via the `-changedir` command-line parameter when launching the game.
 
 Original README continues below
 
@@ -41,11 +56,6 @@ This project does not include any IP from PopCap outside of their open source ga
 To play the game using this project you need to have access to the original game files by [purchasing it](https://store.steampowered.com/app/3590/Plants_vs_Zombies_GOTY_Edition/)
 
 ## Roadmap
-
-#### Currently focused on
-- [x] Add x64 support for the base game **(Partial)**
-- [ ] Replace the old renderer backend for GLFW **(WIP)**
-- [ ] Replace all Windows only code for cross-platform GLFW counterparts **(WIP)**
 
 #### Left for when we have a working x64 build using GLFW
 - [ ] Add all functionality from the GOTY version of the game
