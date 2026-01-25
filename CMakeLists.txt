@@ -204,6 +204,8 @@ elseif (NINTENDO_3DS)
 	ctr_create_3dsx(pvz-portable
 		SMDH pvz-portable.smdh
 	)
+elseif (APPLE)
+	target_link_libraries(pvz-portable PRIVATE "-framework OpenGL")
 else()
 	target_link_libraries(pvz-portable PRIVATE GL)
 endif()

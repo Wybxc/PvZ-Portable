@@ -1,7 +1,9 @@
 #include <SDL.h>
 
 #include <GL/glew.h>
+#ifndef __APPLE__
 #include <GL/glext.h>
+#endif
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>

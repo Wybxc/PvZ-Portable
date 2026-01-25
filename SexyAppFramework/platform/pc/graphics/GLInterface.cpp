@@ -1,7 +1,9 @@
 #include <SDL.h>
 
 #include <GL/glew.h>
+#ifndef __APPLE__
 #include <GL/glext.h>
+#endif
 
 #include "graphics/GLInterface.h"
 #include "graphics/GLImage.h"
