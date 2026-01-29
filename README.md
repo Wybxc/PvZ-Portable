@@ -54,7 +54,7 @@ Note about writable data and caches:
 - The game will read resources (like `main.pak` and `properties/`) from the executable directory by default, so you can launch the binary from any working directory and it will still find them.
 - Per-user writable files (settings, savegames, compiled caches, screenshots) are stored in the **OS-recommended application data path**. With the current build these are under `io.github.wszqkzqk/PlantsVsZombies` and include subfolders such as:
   - `userdata/` — player save files
-  - `compiled/` — compiled binary caches (reanimation / compiled definitions)
+  - `cache64/` if you use the 64-bit version or `cache32/` if you use the 32-bit version — compiled binary caches (reanimation / compiled definitions)
   - `registry.regemu` — settings/registry emulation
   - `popcinfo.dat` — basic runtime stats
   - `_screenshots/` — screenshots created by the game

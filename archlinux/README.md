@@ -32,7 +32,7 @@ sudo pacman -S --needed base-devel
 
 ### Prepare Game Assets
 
-Locate your legally installed copy of Plants vs. Zombies 1.2.0.1073 GOTY. If you have not bought the game yet, you can purchase it on [Steam](https://store.steampowered.com/app/3590/Plants_vs_Zombies_Game_of_the_Year_Edition/) or [EA App](https://www.ea.com/games/plants-vs-zombies/plants-vs-zombies-game-of-the-year). You need two items:
+Locate your legally installed copy of Plants vs. Zombies 1.2.0.1073 GOTY (or 1.2.0.1096 GOTY in Steam). If you have not bought the game yet, you can purchase it on [Steam](https://store.steampowered.com/app/3590/Plants_vs_Zombies_Game_of_the_Year_Edition/) or [EA App](https://www.ea.com/games/plants-vs-zombies/plants-vs-zombies-game-of-the-year). You need two items:
 
 1.  The file `main.pak`
 2.  The folder `properties/`
